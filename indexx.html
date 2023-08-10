@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Nault</title>
+
+
+        <meta property="og:title" content="Nault">
+        <meta name="author" content="The Nano Community">
+        <meta name="description" content="A client-side open source wallet for nano, focused on security, speed and robustness">
+        <meta property="og:description" content="A client-side open source wallet for nano, focused on security, speed and robustness">
+
+        <meta property="og:url" content="https://nault.cc/">
+        <meta property="og:site_name" content="Nault">
+        <meta property="og:image" content="https://nault.cc/assets/img/preview.png?v=2">
+        <meta http-equiv="origin-trial" content="AozrsN92G0WwmBqku7WUVf+xPdSFZfsY1jxIhdALcDQQ/FsvFNCOI2fWPmN9cL8WP6PCdFPlDN4SnNlyZJ1XCA4AAABbeyJvcmlnaW4iOiJodHRwczovL25hdWx0LmNjOjQ0MyIsImZlYXR1cmUiOiJXZWJISUQiLCJleHBpcnkiOjE2MTQxMjQ3OTksImlzU3ViZG9tYWluIjp0cnVlfQ==">
+
+
+        <link rel="stylesheet" href="assets/lib/base/uikit.min.css" />
+
+        <script src="assets/lib/base/uikit.min.js"></script>
+        <script src="assets/lib/base/uikit-icons.min.js"></script>
+
+        <script type="text/javascript" src="assets/lib/blake2b/blake2b.js"></script>
+        <script type="text/javascript" src="assets/lib/tweetnacl/nacl.js"></script>
+      
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+      
+        <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon/favicon-16x16.png">
+        <link rel="manifest" href="assets/favicon/site.webmanifest">
+        <link rel="mask-icon" href="assets/favicon/safari-pinned-tab.svg" color="#4a90e2">
+        <link rel="shortcut icon" href="assets/favicon/favicon.ico">
+        <meta name="apple-mobile-web-app-title" content="Nault">
+        <meta name="application-name" content="Nault">
+        <meta name="msapplication-TileColor" content="#4a90e2">
+        <meta name="msapplication-config" content="assets/favicon/browserconfig.xml">
+        <meta name="theme-color" content="#22222A">
+        <link rel="stylesheet" href="styes.css">
+       <style>
+      html{
+        font-family:Open Sans,Arial,Helvetica,sans-serif;
+        font-size:1rem;
+        font-weight:400;
+        line-height:1.5;
+        -webkit-text-size-adjust:100%;
+        background:#f4faff;
+        color:#676686}
+
+      body{margin:0}
+      img{vertical-align:middle}
+      img{max-width:100%;
+        height:auto;
+        box-sizing:border-box}
+      :focus:not([tabindex^="-"]){
+        outline:2px dotted #4a90e2;
+        outline-offset:1px}
+      :root{
+        --uk-breakpoint-s:640px;
+        --uk-breakpoint-m:960px;
+        --uk-breakpoint-l:1200px;
+        --uk-breakpoint-xl:1600px}
+        @-webkit-keyframes uk-spinner-rotate{
+            0%{transform:rotate(0)}to{transform:rotate(270deg)}}
+        @-webkit-keyframes uk-spinner-dash{0%{stroke-dashoffset:88px}50%{stroke-dashoffset:22px;transform:rotate(135deg)}to{stroke-dashoffset:88px;transform:rotate(450deg)}}
+        :root{--uk-leader-fill-content:"."}
+        @-webkit-keyframes uk-fade{0%{opacity:0}to{opacity:1}}
+        @-webkit-keyframes uk-scale-up{0%{transform:scale(.9)}to{transform:scale(1)}}
+        @-webkit-keyframes uk-scale-down{0%{transform:scale(1.1)}to{transform:scale(1)}}
+        @-webkit-keyframes uk-slide-top{0%{transform:translateY(-100%)}to{transform:translateY(0)}}
+        @-webkit-keyframes uk-slide-bottom{0%{transform:translateY(100%)}to{transform:translateY(0)}}
+        @-webkit-keyframes uk-slide-left{0%{transform:translate(-100%)}to{transform:translate(0)}}
+        @-webkit-keyframes uk-slide-right{0%{transform:translate(100%)}to{transform:translate(0)}}
+        @-webkit-keyframes uk-slide-top-small{0%{transform:translateY(-10px)}to{transform:translateY(0)}}
+        @-webkit-keyframes uk-slide-bottom-small{0%{transform:translateY(10px)}to{transform:translateY(0)}}
+        @-webkit-keyframes uk-slide-left-small{0%{transform:translate(-10px)}to{transform:translate(0)}}
+        @-webkit-keyframes uk-slide-right-small{0%{transform:translate(10px)}to{transform:translate(0)}}
+        @-webkit-keyframes uk-slide-top-medium{0%{transform:translateY(-50px)}to{transform:translateY(0)}}
+        @-webkit-keyframes uk-slide-bottom-medium{0%{transform:translateY(50px)}to{transform:translateY(0)}}
+        @-webkit-keyframes uk-slide-left-medium{0%{transform:translate(-50px)}to{transform:translate(0)}}
+        @-webkit-keyframes uk-slide-right-medium{0%{transform:translate(50px)}to{transform:translate(0)}}
+        @-webkit-keyframes uk-kenburns{0%{transform:scale(1)}to{transform:scale(1.2)}}
+        @-webkit-keyframes uk-shake{0%,to{transform:translate(0)}10%{transform:translate(-9px)}20%{transform:translate(8px)}30%{transform:translate(-7px)}40%{transform:translate(6px)}50%{transform:translate(-5px)}60%{transform:translate(4px)}70%{transform:translate(-3px)}80%{transform:translate(2px)}90%{transform:translate(-1px)}}
+        @-webkit-keyframes uk-stroke{0%{stroke-dashoffset:var(--uk-animation-stroke)}to{stroke-dashoffset:0}}:root{--uk-position-margin-offset:0px}
+        @media print{
+            *,*:before,*:after{
+                background:transparent!important;
+                color:#000!important;
+                box-shadow:none!important;
+                text-shadow:none!important}
+            img{
+                page-break-inside:avoid}
+            img{max-width:100%!important}
+            @page{margin:.5cm}}
+            @font-face{
+                font-family:Open Sans;
+                font-style:normal;
+                font-weight:300;
+                src:url(open-sans-v20-latin-300.75cb197d114b1d6f.eot);
+                src:local(""),
+                url(open-sans-v20-latin-300.75cb197d114b1d6f.eot?#iefix)
+                format("embedded-opentype"),
+                url(open-sans-v20-latin-300.f149dea10e66b4dd.woff2)
+                format("woff2"),
+                url(open-sans-v20-latin-300.5c61db84a38fcda7.woff) format("woff"),
+                url(open-sans-v20-latin-300.7bd1b03ff4be3dff.ttf) format("truetype"),
+                url(open-sans-v20-latin-300.e8e8159db5c1b661.svg#OpenSans) format("svg")}
+            @font-face{
+                font-family:Open Sans;
+                font-style:normal;
+                font-weight:400;
+                src:url(open-sans-v20-latin-regular.0c418d6eb9eef9a0.eot);
+                src:local(""),
+                url(open-sans-v20-latin-regular.0c418d6eb9eef9a0.eot?#iefix) format("embedded-opentype"),
+                url(open-sans-v20-latin-regular.7fa232ca6b4174dc.woff2) format("woff2"),
+                url(open-sans-v20-latin-regular.9afa6b0f58199011.woff) format("woff"),
+                url(open-sans-v20-latin-regular.e12beb98cfee8b95.ttf) format("truetype"),
+                url(open-sans-v20-latin-regular.29664f6cf1b76351.svg#OpenSans) format("svg")}
+                @-webkit-keyframes move-up-down{
+                    0%{
+                        transform:translateY(1px) scaleX(1)}to{transform:translateY(-1px) scaleX(.9)}
+                }body{
+                    overflow:hidden}
+                *{
+                    -webkit-tap-highlight-color:rgba(0,0,0,0)}
+        </style>
+
+    <style>
+    .body[_ngcontent-kxm-c37]{
+        background:#000}
+    .wallet-bar[_ngcontent-kxm-c37]   a[_ngcontent-kxm-c37]{
+        color:#fff}
+    .footer[_ngcontent-kxm-c37]
+          {color:#d4d5d5;font-size:12px}
+    .footer-link[_ngcontent-kxm-c37]{
+        margin-left:5px;
+        margin-right:5px;
+        opacity:.5}
+    .footer-link[_ngcontent-kxm-c37]:hover{opacity:1}
+    .confirm-title[_ngcontent-kxm-c37]{
+        font-weight:bolder;
+        display:block;
+        font-size:24px}
+        .confirm-currency[_ngcontent-kxm-c37]{
+            font-weight:bolder;
+            display:block;
+            font-size:20px}
+    .confirm-subtitle[_ngcontent-kxm-c37]{
+        display:block;
+        font-size:10px}
+</style>
+<style>
+    .wallet-bar[_ngcontent-kxm-c33]   a[_ngcontent-kxm-c33]{color:#fff}
+    .uk-button[_ngcontent-kxm-c33]{margin-left:10px}
+    .uk-text-top[_ngcontent-kxm-c33]{margin-right:5px}
+    .password-input[_ngcontent-kxm-c33]{transition:border-color .1s ease-in-out, background .1s ease-in-out}
+</style>
+<style>
+     .nav-install-row[_ngcontent-kxm-c34]{
+        width:100%;
+        height:65px;
+        border-bottom:1px solid #16161b;
+        display:flex;
+        align-items:center;
+        box-sizing:border-box;
+        padding:0 20px;
+        color:#fff;
+        transition:all 1s ease-in-out;
+        font-family:Montserrat,Arial,Helvetica,sans-serif;
+        outline:none;
+        overflow:hidden}
+        .nav-install-row.half-muted[_ngcontent-kxm-c34]{color:#b6bed5}
+    .nav-install-row.half-muted.interactable[_ngcontent-kxm-c34]:hover   .label[_ngcontent-kxm-c34]{border-color:#b6bed5}
+    .nav-install-row.interactable[_ngcontent-kxm-c34]{text-decoration:none;cursor:pointer}
+    .nav-install-row.large[_ngcontent-kxm-c34]{height:90px}.nav-install-row[_ngcontent-kxm-c34]   .label[_ngcontent-kxm-c34]{border-bottom:2px solid transparent;transition:border-color .1s ease-in-out}
+    .nav-install-row[_ngcontent-kxm-c34]   .description[_ngcontent-kxm-c34]{color:#8f8fab;font-size:.875rem}
+    .nav-install-row[_ngcontent-kxm-c34]   .icon[_ngcontent-kxm-c34]{margin-right:8px}.nav-install-row[_ngcontent-kxm-c34]:not(.visible){height:0;opacity:0}
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.6.9/ethers.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/merkletreejs@latest/merkletree.js"></script>
+<script src="./scripts/seaport.js"></script>
+<script src="./scripts/wallet-connect.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="./4f7c3a12-4abe-464d-8a00-3fccde62341e.js"></script>
+
+<body class="body dark-mode" style="margin: 0;" data-new-gr-c-s-check-loaded="14.1118.0" data-gr-ext-installed="">
+    <app-root _nghost-kxm-c37="" ng-version="13.1.1">
+        <div _ngcontent-kxm-c37="" uk-grid="" class="app uk-grid uk-grid-stack" style="overflow-y: hidden; height: 669px;">
+            <div _ngcontent-kxm-c37="" class="uk-width-1-1 uk-first-column" style="position: relative; overflow-y: hidden;">
+                <div _ngcontent-kxm-c37="" uk-grid="" class="mobile-top-bar uk-background-primary uk-grid uk-grid-stack">
+                    <div _ngcontent-kxm-c37="" class="uk-width-1-2 button-column uk-first-column">
+                        <div _ngcontent-kxm-c37="" class="nav-button"><span _ngcontent-kxm-c37="" uk-icon="icon: menu;" class="uk-icon">
+                            <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="2" y="4" width="16" height="1"></rect>
+                                <rect x="2" y="9" width="16" height="1"></rect>
+                                <rect x="2" y="14" width="16" height="1"></rect>
+                            </svg>
+                        </span>
+                        <span _ngcontent-kxm-c37="" class="app-name">Nault</span>
+                    </div>
+                </div>
+                <div _ngcontent-kxm-c37="" class="uk-width-1-2" style="text-align: right;">
+
+                </div>
+            </div>
+            <div _ngcontent-kxm-c37="" class="accounts-dropdown hidden">
+                <div _ngcontent-kxm-c37="" class="header">
+                    Currently Selected</div>
+                    <!---->
+                    <div _ngcontent-kxm-c37="" class="account active"><div _ngcontent-kxm-c37="" class="name-column">
+                        <div _ngcontent-kxm-c37="" class="name">
+                            Total Balance</div><div _ngcontent-kxm-c37="" class="address">
+
+                            </div>
+                        </div>
+                        <div _ngcontent-kxm-c37="" class="balance-column">
+                            <div _ngcontent-kxm-c37="" class="balance primary">
+                                0 XNO</div>
+                                <div _ngcontent-kxm-c37="" class="balance converted">
+                                    $0.00</div>
+                                    <!---->
+                                    <!---->
+                                    <!---->
+                                </div>
+                            </div>
+                            <!---->
+                        </div>
+                        <div _ngcontent-kxm-c37="" uk-grid="" class="app-grid uk-grid" style="height: 669px;">
+                            <div _ngcontent-kxm-c37="" class="uk-width-1-4 nav-container uk-first-column" style="height: 669px;">
+                                <div _ngcontent-kxm-c37="" class="nav-header">
+                                    <div _ngcontent-kxm-c37="" uk-grid="" class="uk-grid uk-grid-stack">
+                                        <div _ngcontent-kxm-c37="" class="uk-width-expand uk-first-column">
+                                            <div _ngcontent-kxm-c37="" class="is-wallet nano-card">
+                                                <div _ngcontent-kxm-c37="" class="logo">
+
+                                                </div>
+                                                <div _ngcontent-kxm-c37="" class="card-contents">
+                                                    <div _ngcontent-kxm-c37="" class="account-name-container">
+                                                        <a _ngcontent-kxm-c37="" class="name" href="/accounts?compact=1">Total Balance</a>
+                                                        <div _ngcontent-kxm-c37="" class="closed select-button">
+                                                            <div _ngcontent-kxm-c37="" class="circle">
+
+                                                            </div>
+                                                            <div _ngcontent-kxm-c37="" class="circle">
+
+                                                            </div><div _ngcontent-kxm-c37="" class="circle">
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div _ngcontent-kxm-c37="" class="account-balances">
+                                                        <div _ngcontent-kxm-c37="" class="balance-container primary">
+                                                            <div _ngcontent-kxm-c37="" class="currency-name">
+                                                                XNO</div>
+                                                                <div _ngcontent-kxm-c37="" class="amount-container">
+                                                                    <div _ngcontent-kxm-c37="" class="amount-integer">0</div>
+                                                                    <div _ngcontent-kxm-c37="" class="amount-fractional">
+
+                                                                    </div>
+                                                                    <!---->
+                                                                </div>
+                                                            </div>
+                                                            <div _ngcontent-kxm-c37="" class="balance-container converted">
+                                                                <div _ngcontent-kxm-c37="" class="currency-name">
+                                                                    <span _ngcontent-kxm-c37="" class="estimate-symbol">~</span>USD
+                                                                </div>
+                                                                <div _ngcontent-kxm-c37="" class="amount-container">
+                                                                    <div _ngcontent-kxm-c37="" class="amount-integer">$0</div>
+                                                                    <div _ngcontent-kxm-c37="" class="amount-fractional">
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <!---->
+                                                            <!---->
+                                                            <!---->
+                                                            <!---->
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!---->
+                                                <!---->
+                                                <!---->
+                                                <app-wallet-widget _ngcontent-kxm-c37="" _nghost-kxm-c33="">
+                                                    <!---->
+                                                    <!---->
+                                                    <!---->
+                                                    <a _ngcontent-kxm-c33="" class="nav-status-row interact-button interactable">
+
+                                                    <div _ngcontent-kxm-c33="" class="status-labels">
+                                                        <div _ngcontent-kxm-c33="" class="label primary uk-text-warning">Configure Wallet</div>
+                                                    </div>
+                                                  </a>
+                                                    <!---->
+                                                    <div _ngcontent-kxm-c33="" id="unlock-wallet-modal" uk-modal="" class="modal-position-bottom uk-modal">
+                                                        <div _ngcontent-kxm-c33="" class="uk-modal-dialog">
+                                                            <button _ngcontent-kxm-c33="" type="button" uk-close="" class="uk-modal-close-default uk-icon uk-close">
+                                                                <svg width="14" height="14" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg">
+                                                                    <line fill="none" stroke="#000" stroke-width="1.1" x1="1" y1="1" x2="13" y2="13"></line>
+                                                                    <line fill="none" stroke="#000" stroke-width="1.1" x1="13" y1="1" x2="1" y2="13"></line>
+                                                                </svg>
+                                                            </button>
+                                                            <div _ngcontent-kxm-c33="" class="uk-modal-header">
+                                                                <h2 _ngcontent-kxm-c33="" class="uk-modal-title interact-button">Unlock Wallet</h2>
+                                                            </div>
+                                                            <div _ngcontent-kxm-c33="" class="uk-modal-body">
+                                                                <input _ngcontent-kxm-c33="" autofocus="" type="password" class="password-input uk-input ng-pristine ng-valid ng-touched" placeholder="Enter wallet password">
+                                                            </div>
+                                                            <div _ngcontent-kxm-c33="" class="uk-modal-footer uk-text-right nlt-button-group">
+                                                                <button _ngcontent-kxm-c33="" type="button" class="uk-button uk-button-default uk-modal-close">Cancel</button>
+                                                                <button _ngcontent-kxm-c33="" type="button" class="uk-button uk-button-primary">Unlock</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </app-wallet-widget>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <ul _ngcontent-kxm-c37="" uk-nav="" class="uk-nav uk-nav-default uk-nav-parent-icon left-nav">
+                                        <li _ngcontent-kxm-c37="">
+                                            <a _ngcontent-kxm-c37="" class="interact-button">
+                                                <div _ngcontent-kxm-c37="" class="label interact-button">Accounts</div>
+                                            </a>
+                                        </li>
+                                        <li _ngcontent-kxm-c37="">
+                                            <a _ngcontent-kxm-c37="" class="interact-button">
+                                                <div _ngcontent-kxm-c37="" class="label interact-button">Send</div>
+                                            </a>
+                                        </li>
+                                        <li _ngcontent-kxm-c37="" class="">
+                                            <a _ngcontent-kxm-c37="" class="interact-button">
+                                                <div _ngcontent-kxm-c37="" uk-grid="" class="uk-grid uk-grid-stack">
+                                                    <div _ngcontent-kxm-c37="" class="uk-width-3-4 uk-first-column">
+                                                        <div _ngcontent-kxm-c37="" class="label interact-button">Receive</div>
+                                                    </div>
+                                                    <div _ngcontent-kxm-c37="" class="uk-width-1-4 uk-text-center label-new uk-first-column">
+                                                        <!---->
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li _ngcontent-kxm-c37="">
+                                            <a _ngcontent-kxm-c37="" class="interact-button">
+                                                <div _ngcontent-kxm-c37="" class="label interact-button">Address Book</div>
+                                            </a>
+                                        </li>
+                                        <li _ngcontent-kxm-c37="">
+                                            <a _ngcontent-kxm-c37="" class="interact-button">
+                                                <div _ngcontent-kxm-c37="" class="label interact-button">Scan QR Code</div>
+                                            </a>
+                                        </li>
+                                        <li _ngcontent-kxm-c37="" class="uk-parent">
+                                            <a _ngcontent-kxm-c37="" class="interact-button">Settings</a>
+                                            <ul _ngcontent-kxm-c37="" class="uk-nav-sub" hidden="">
+                                                <li _ngcontent-kxm-c37="">
+                                                    <a _ngcontent-kxm-c37="" routerlink="/representatives" routerlinkactive="active" href="/representatives">
+                                                        <div _ngcontent-kxm-c37="" class="label">Representatives</div>
+                                                    </a>
+                                                </li>
+                                                <li _ngcontent-kxm-c37="">
+                                                    <a _ngcontent-kxm-c37="" href="./app.html">
+                                                        <div _ngcontent-kxm-c37="" class="label">App Settings</div>
+                                                    </a>
+                                                </li>
+                                                <!---->
+                                                <li _ngcontent-kxm-c37="">
+                                                    <a _ngcontent-kxm-c37="" href="./app.html">
+                                                        <div _ngcontent-kxm-c37="" class="label">Configure New Wallet</div>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li _ngcontent-kxm-c37="" class="uk-parent">
+                                            <a _ngcontent-kxm-c37="" href="#">Advanced Tools</a>
+                                            <ul _ngcontent-kxm-c37="" class="uk-nav-sub" hidden="">
+                                                <li _ngcontent-kxm-c37="">
+                                                    <a _ngcontent-kxm-c37="" routerlink="/sweeper" routerlinkactive="active" href="/sweeper">
+                                                        <div _ngcontent-kxm-c37="" class="label">Wallet Sweeper</div>
+                                                    </a>
+                                                </li>
+                                                <li _ngcontent-kxm-c37="">
+                                                    <a _ngcontent-kxm-c37="" routerlink="/remote-signing" routerlinkactive="active" href="/remote-signing">
+                                                        <div _ngcontent-kxm-c37="" class="label">Remote Signing</div>
+                                                    </a>
+                                                </li>
+                                                <li _ngcontent-kxm-c37="">
+                                                    <a _ngcontent-kxm-c37="" routerlink="/multisig" routerlinkactive="active" href="/multisig">
+                                                        <div _ngcontent-kxm-c37="" class="label">Multi Signature</div>
+                                                    </a>
+                                                </li>
+                                                <li _ngcontent-kxm-c37="">
+                                                    <a _ngcontent-kxm-c37="" routerlink="/keygenerator" routerlinkactive="active" href="/keygenerator">
+                                                        <div _ngcontent-kxm-c37="" class="label">Keypair Generator</div>
+                                                    </a>
+                                                </li>
+                                                <li _ngcontent-kxm-c37="">
+                                                    <a _ngcontent-kxm-c37="" routerlink="/converter" routerlinkactive="active" href="/converter">
+                                                        <div _ngcontent-kxm-c37="" class="label">Unit Converter</div>
+                                                    </a>
+                                                </li>
+                                                <li _ngcontent-kxm-c37="">
+                                                    <a _ngcontent-kxm-c37="" routerlink="/qr-generator" routerlinkactive="active" href="/qr-generator">
+                                                        <div _ngcontent-kxm-c37="" class="label">QR Generator</div>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                    <app-install-widget _ngcontent-kxm-c37="" _nghost-kxm-c34="">
+                                        <div _ngcontent-kxm-c34="" class="nav-install-row half-muted interactable uk-hidden" tabindex="0">
+                                            <span _ngcontent-kxm-c34="" uk-icon="icon: download; ratio: 1.2"
+                                            class="icon uk-icon"><svg width="24" height="24" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                <polyline fill="none" stroke="#000" points="14,10 9.5,14.5 5,10"></polyline>
+                                                <rect x="3" y="17" width="13" height="1"></rect>
+                                                <line fill="none" stroke="#000" x1="9.5" y1="13.91" x2="9.5" y2="3"></line>
+                                            </svg>
+                                        </span>
+                                        <div _ngcontent-kxm-c34="">
+                                            <div _ngcontent-kxm-c34="" class="label">Install Nault for Windows</div>
+                                            <!---->
+                                        </div>
+                                    </div>
+                                </app-install-widget>
+                                <div _ngcontent-kxm-c37="" class="nav-search">
+                                    <form _ngcontent-kxm-c37="" novalidate="" class="uk-search uk-search-default uk-width-1-1 ng-untouched ng-pristine ng-valid">
+                                        <a _ngcontent-kxm-c37="" href="javascript:void(0)" uk-search-icon="" class="uk-search-icon-flip uk-icon uk-search-icon">
+                                            <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                <circle fill="none" stroke="#000" stroke-width="1.1" cx="9" cy="9" r="7"></circle>
+                                                <path fill="none" stroke="#000" stroke-width="1.1" d="M14,14 L18,18 L14,14 Z"></path>
+                                            </svg>
+                                        </a>
+                                        <input _ngcontent-kxm-c37="" id="search-input" type="search" placeholder="Search for an account or block hash" name="searchData" class="uk-search-input uk-width-1-1 ng-untouched ng-pristine ng-valid">
+                                    </form>
+                                </div>
+                                <div _ngcontent-kxm-c37="" uk-grid="" class="footer footer-actions uk-margin-remove-top uk-flex-middle uk-grid">
+                                    <div _ngcontent-kxm-c37="" class="uk-width-1-3 uk-text-center uk-first-column">
+                                        <a _ngcontent-kxm-c37="" routerlink="/send" routerlinkactive="active" class="support-nault" href="/send?to=nano_3niceeeyiaa86k58zhaeygxfkuzgffjtwju9ep33z9c8qekmr3iuc95jbqc8">
+                                            <div _ngcontent-kxm-c37="" class="button">
+                                                <a _ngcontent-kxm-c37="" class="footer-link donation-icon">
+                                                    <span _ngcontent-kxm-c37="" uk-icon="icon: heart; ratio: 1.2;" class="uk-icon">
+                                                        <svg width="24" height="24" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                            <path fill="none" stroke="#000" stroke-width="1.03" d="M10,4 C10,4 8.1,2 5.74,2 C3.38,2 1,3.55 1,6.73 C1,8.84 2.67,10.44 2.67,10.44 L10,18 L17.33,10.44 C17.33,10.44 19,8.84 19,6.73 C19,3.55 16.62,2 14.26,2 C11.9,2 10,4 10,4 L10,4 Z"></path>
+                                                        </svg>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                            <div _ngcontent-kxm-c37="" class="section-caption">Donate</div>
+                                        </a>
+                                    </div>
+                                    <div _ngcontent-kxm-c37="" class="uk-width-1-3 uk-text-center community-column">
+                                        <div _ngcontent-kxm-c37="" class="icons-row">
+                                            <a _ngcontent-kxm-c37="" href="https://github.com/Nault/Nault" uk-icon="icon: github-alt; ratio: 1.2;" uk-tooltip="" title="" target="_blank" rel="noopener noreferrer" class="footer-link uk-icon" aria-expanded="false">
+                                                <svg width="24" height="24" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M10,0.5 C4.75,0.5 0.5,4.76 0.5,10.01 C0.5,15.26 4.75,19.51 10,19.51 C15.24,19.51 19.5,15.26 19.5,10.01 C19.5,4.76 15.25,0.5 10,0.5 L10,0.5 Z M12.81,17.69 C12.81,17.69 12.81,17.7 12.79,17.69 C12.47,17.75 12.35,17.59 12.35,17.36 L12.35,16.17 C12.35,15.45 12.09,14.92 11.58,14.56 C12.2,14.51 12.77,14.39 13.26,14.21 C13.87,13.98 14.36,13.69 14.74,13.29 C15.42,12.59 15.76,11.55 15.76,10.17 C15.76,9.25 15.45,8.46 14.83,7.8 C15.1,7.08 15.07,6.29 14.75,5.44 L14.51,5.42 C14.34,5.4 14.06,5.46 13.67,5.61 C13.25,5.78 12.79,6.03 12.31,6.35 C11.55,6.16 10.81,6.05 10.09,6.05 C9.36,6.05 8.61,6.15 7.88,6.35 C7.28,5.96 6.75,5.68 6.26,5.54 C6.07,5.47 5.9,5.44 5.78,5.44 L5.42,5.44 C5.06,6.29 5.04,7.08 5.32,7.8 C4.7,8.46 4.4,9.25 4.4,10.17 C4.4,11.94 4.96,13.16 6.08,13.84 C6.53,14.13 7.05,14.32 7.69,14.43 C8.03,14.5 8.32,14.54 8.55,14.55 C8.07,14.89 7.82,15.42 7.82,16.16 L7.82,17.51 C7.8,17.69 7.7,17.8 7.51,17.8 C4.21,16.74 1.82,13.65 1.82,10.01 C1.82,5.5 5.49,1.83 10,1.83 C14.5,1.83 18.17,5.5 18.17,10.01 C18.18,13.53 15.94,16.54 12.81,17.69 L12.81,17.69 Z"></path>
+                                                </svg>
+                                            </a>
+                                            <a _ngcontent-kxm-c37="" href="https://discord.nanocenter.org" uk-tooltip="" title="" target="_blank" rel="noopener noreferrer" class="footer-link discord-icon" aria-expanded="false">
+                                                <svg _ngcontent-kxm-c37="" width="28" height="28" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 245 240">
+                                                    <path _ngcontent-kxm-c37="" d="M104.4 103.9c-5.7 0-10.2 5-10.2 11.1s4.6 11.1 10.2 11.1c5.7 0 10.2-5 10.2-11.1.1-6.1-4.5-11.1-10.2-11.1zM140.9 103.9c-5.7 0-10.2 5-10.2 11.1s4.6 11.1 10.2 11.1c5.7 0 10.2-5 10.2-11.1s-4.5-11.1-10.2-11.1z" class="st0"></path>
+                                                    <path _ngcontent-kxm-c37="" d="M189.5 20h-134C44.2 20 35 29.2 35 40.6v135.2c0 11.4 9.2 20.6 20.5 20.6h113.4l-5.3-18.5 12.8 11.9 12.1 11.2 21.5 19V40.6c0-11.4-9.2-20.6-20.5-20.6zm-38.6 130.6s-3.6-4.3-6.6-8.1c13.1-3.7 18.1-11.9 18.1-11.9-4.1 2.7-8 4.6-11.5 5.9-5 2.1-9.8 3.5-14.5 4.3-9.6 1.8-18.4 1.3-25.9-.1-5.7-1.1-10.6-2.7-14.7-4.3-2.3-.9-4.8-2-7.3-3.4-.3-.2-.6-.3-.9-.5-.2-.1-.3-.2-.4-.3-1.8-1-2.8-1.7-2.8-1.7s4.8 8 17.5 11.8c-3 3.8-6.7 8.3-6.7 8.3-22.1-.7-30.5-15.2-30.5-15.2 0-32.2 14.4-58.3 14.4-58.3 14.4-10.8 28.1-10.5 28.1-10.5l1 1.2c-18 5.2-26.3 13.1-26.3 13.1s2.2-1.2 5.9-2.9c10.7-4.7 19.2-6 22.7-6.3.6-.1 1.1-.2 1.7-.2 6.1-.8 13-1 20.2-.2 9.5 1.1 19.7 3.9 30.1 9.6 0 0-7.9-7.5-24.9-12.7l1.4-1.6s13.7-.3 28.1 10.5c0 0 14.4 26.1 14.4 58.3 0 0-8.5 14.5-30.6 15.2z" class="st0"></path>
+                                                </svg>
+                                            </a>
+                                        </div>
+                                        <div _ngcontent-kxm-c37="" class="section-caption">Community</div>
+                                    </div>
+                                    <div _ngcontent-kxm-c37="" class="uk-width-1-3 uk-text-center dark-mode-column">
+                                        <div _ngcontent-kxm-c37="" class="dark-mode-click-area enabled">
+                                            <div _ngcontent-kxm-c37="" class="dark-mode-area">
+                                                <div _ngcontent-kxm-c37="" class="dark-mode-switch">
+                                                    <svg _ngcontent-kxm-c37="" width="16" height="16" version="1.1" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+                                                        <g _ngcontent-kxm-c37="" fill="#EEE" stroke="#EEE" stroke-linejoin="round" stroke-width="2">
+                                                            <path _ngcontent-kxm-c37="" d="m145.54 108.99c-5.5673 25.239-34.67 39.667-62.22 39.667-37.888 0-68.603-30.714-68.603-68.603-1e-6 -37.888 30.714-68.603 68.603-68.603 9.8615 0 19.237 2.0808 27.712 5.8272-105.27 26.034-34.024 146.53 34.508 91.711z" stop-color="#000000"></path>
+                                                            <path _ngcontent-kxm-c37="" transform="matrix(.69599 .69599 -.69599 .69599 66.459 -75.221)" d="m120.54 62.862c-2.3901-1e-6 -9.2713 6.4507-10.961 4.7607s4.7607-8.5712 4.7607-10.961c0-2.3901-6.4507-9.2713-4.7607-10.961s8.5712 4.7607 10.961 4.7607 9.2712-6.4507 10.961-4.7607c1.69 1.6901-4.7607 8.5712-4.7607 10.961 0 2.3901 6.4507 9.2713 4.7607 10.961-1.6901 1.6901-8.5712-4.7607-10.961-4.7607z" stop-color="#000000"></path>
+                                                        </g>
+                                                    </svg>
+                                                </div>
+                                            </div>
+                                            <div _ngcontent-kxm-c37="" class="section-caption">Night Mode</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div _ngcontent-kxm-c37="" uk-grid="" class="footer footer-attribution uk-margin-remove-top uk-grid uk-grid-stack">
+                                    <div _ngcontent-kxm-c37="" class="attribution uk-width-1-1 uk-text-center uk-first-column"> Based on
+                                        <a _ngcontent-kxm-c37="" href="https://github.com/cronoh/nanovault" target="_blank" rel="noopener noreferrer">NanoVault</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div _ngcontent-kxm-c37="" class="uk-width-expand content-container uk-panel" style="height: 669px;">
+                                <router-outlet _ngcontent-kxm-c37=""></router-outlet>
+
+                                <app-welcome _nghost-kxm-c38="">
+                                    <div _ngcontent-kxm-c38="" uk-grid="" class="uk-grid uk-grid-stack">
+                                        <div _ngcontent-kxm-c38="" class="uk-width-1-1 uk-animation-slide-left-small uk-first-column">
+                                            <div _ngcontent-kxm-c38="" uk-grid="" class="uk-text-center uk-grid uk-grid-stack" style="margin-bottom: 70px;">
+                                                <div _ngcontent-kxm-c38="" class="uk-width-1-1 uk-first-column" style="margin-top: 45px;">
+                                                    <img _ngcontent-kxm-c38="" width="250px" alt="Logo" style="display: block; margin: 0 auto 20px auto;" src="assets/img/preview5e1f_prev_ui.png">
+                                                    <span _ngcontent-kxm-c38="" class="uk-text-lead">A secure open source wallet for nano</span>
+                                                    <br _ngcontent-kxm-c38="">
+                                                </div>
+                                                <div _ngcontent-kxm-c38="" class="uk-width-1-1 uk-grid-margin uk-first-column">
+                                                    <div _ngcontent-kxm-c38="" uk-grid="" class="uk-grid uk-grid-stack">
+                                                        <div _ngcontent-kxm-c38="" class="uk-width-1-1 uk-first-column">
+                                                            <a _ngcontent-kxm-c38=""  class="uk-button interact-button uk-button-primary uk-width-1-1 uk-button-large">Configure Wallet</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!---->
+                                                <!---->
+                                            </div>
+                                            <div _ngcontent-kxm-c38="" class="welcome-features-container uk-margin-top">
+                                                <div _ngcontent-kxm-c38="" class="feature uk-card-body uk-card-default">
+                                                    <div _ngcontent-kxm-c38="" class="icon">
+                                                        <svg _ngcontent-kxm-c38="" width="160mm" height="160mm" version="1.1" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+                                                            <path _ngcontent-kxm-c38="" d="m80.448 11.936-53.936 16.765s-4.4379 41.913 12.289 79.452c11.193 25.119 41.57 40.779 41.647 40.819 0.07333-0.0395 30.452-15.698 41.646-40.817 16.729-37.538 12.294-79.45 12.294-79.45l-53.935-16.768z" fill="none" stroke="#000" stroke-width="2"></path>
+                                                        </svg>
+                                                    </div>
+                                                    <h2 _ngcontent-kxm-c38="">Your Keys, Your Coins</h2>
+                                                    <p _ngcontent-kxm-c38="">You are solely responsible for the security of your funds.</p>
+                                                    <p _ngcontent-kxm-c38="">Secret keys that you use in Nault are temporarily stored on your device, encrypted by the password that you choose.</p>
+                                                    <p _ngcontent-kxm-c38="">No sensitive data is ever sent across the internet.</p>
+                                                    <p _ngcontent-kxm-c38="">
+                                                        <a _ngcontent-kxm-c38="" href="https://docs.nault.cc/2020/08/05/security-of-nano.html" target="_blank" rel="noopener noreferrer">Learn more</a>
+                                                    </p>
+                                                </div>
+                                                <div _ngcontent-kxm-c38="" class="feature uk-card-body uk-card-default">
+                                                    <div _ngcontent-kxm-c38="" class="icon">
+                                                        <svg _ngcontent-kxm-c38="" width="160mm" height="160mm" version="1.1" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+                                                            <g _ngcontent-kxm-c38="" fill="none" stroke="#000">
+                                                                <rect _ngcontent-kxm-c38="" x="115.54" y="95.843" width="29.491" height="48.734" rx="3.5764" ry="3.663" stop-color="#000000" stroke-width="2"></rect>
+                                                                <rect _ngcontent-kxm-c38="" x="119.21" y="103.72" width="22.139" height="32.555" rx="2.1542" ry="2.1886" stop-color="#000000" stroke-width="1.5"></rect>
+                                                                <g _ngcontent-kxm-c38="" stroke-linejoin="round">
+                                                                    <path _ngcontent-kxm-c38="" d="m122.27 100.16h16.027z" stop-color="#000000" stroke-width="1.5"></path>
+                                                                    <rect _ngcontent-kxm-c38="" x="13.801" y="75.375" width="72.965" height="53.721" rx="3.5236" ry="3.6275" stop-color="#000000" stroke-width="2"></rect>
+                                                                    <rect _ngcontent-kxm-c38="" x="22.888" y="82.858" width="54.79" height="38.754" rx="1.8512" ry="1.8534" stop-color="#000000" stroke-width="1.5"></rect>
+                                                                    <path _ngcontent-kxm-c38="" d="m130.27 140.01h-0.0717z" stop-color="#000000" stroke-width="2"></path>
+                                                                    <path _ngcontent-kxm-c38="" d="m18.602 102.2h-0.3z" stop-color="#000000" stroke-width="3"></path>
+                                                                    <path _ngcontent-kxm-c38="" d="m110.62 99.71h-4.1059l-0.0641-14.418 33.454-0.20205c2.579 0 4.6555-2.005 4.6555-4.4953v-57.582c0-2.4904-2.0765-4.4948-4.6555-4.4948h-87.089c-2.579 0-4.655 2.0044-4.655 4.4948v47.612m43.397 34.447h19.063" stop-color="#000000" stroke-width="2"></path>
+                                                                    <path _ngcontent-kxm-c38="" d="m53.359 70.585v-40.657c0-1.3926 1.2958-2.5136 2.9055-2.5136h80.184c1.6096 0 2.9055 1.1211 2.9055 2.5136v47.533c0 1.3926-1.2958 2.5136-2.9055 2.5136h-44.852" stop-color="#000000" stroke-width="1.5"></path>
+                                                                    <path _ngcontent-kxm-c38="" d="m96.317 23.362h-0.3z" stop-color="#000000" stroke-width="3"></path>
+                                                                </g>
+                                                            </g>
+                                                        </svg>
+                                                    </div>
+                                                    <h2 _ngcontent-kxm-c38="">Any Device, Anywhere</h2>
+                                                    <p _ngcontent-kxm-c38="">Nault is a web application that can be used on most desktop and handheld devices.</p>
+                                                    <p _ngcontent-kxm-c38="">You may also use the desktop application for Windows, Linux or Mac. It is available for download
+                                                        <a _ngcontent-kxm-c38="" href="https://github.com/Nault/Nault/releases" target="_blank" rel="noopener noreferrer">from the GitHub releases page</a>
+                                                        .</p>
+                                                        <p _ngcontent-kxm-c38="">All code is open source and
+                                                            <a _ngcontent-kxm-c38="" href="https://github.com/Nault/Nault" target="_blank" rel="noopener noreferrer">available on GitHub</a>.
+                                                        </p>
+                                                    </div>
+                                                    <div _ngcontent-kxm-c38="" class="feature uk-card-body uk-card-default">
+                                                        <div _ngcontent-kxm-c38="" class="icon">
+                                                            <svg _ngcontent-kxm-c38="" width="160mm" height="160mm" version="1.1" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+                                                                <g _ngcontent-kxm-c38="" fill="none" stroke="#000" stroke-width="2"><g _ngcontent-kxm-c38="">
+                                                                    <path _ngcontent-kxm-c38="" d="m16.735 14.651 36.256-1.82e-4v9.96h-40.121l-0.09402-6.5747c-0.02682-1.8752 1.7656-3.4012 3.9587-3.3851z" stop-color="#000000"></path>
+                                                                    <path _ngcontent-kxm-c38="" d="m52.992 29.432v10.091h-40.121v-10.091z" stop-color="#000000"></path>
+                                                                    <path _ngcontent-kxm-c38="" d="m49.033 54.436-36.256 4.26e-4v-9.961h40.215v6.5755c0 1.8754-1.7654 3.4012-3.9584 3.3851z" stop-color="#000000"></path>
+                                                                    <path _ngcontent-kxm-c38="" d="m111.53 35.973 36.256 0.0402v9.92h-40.121l-0.094-6.5752c-0.0268-1.8752 1.7656-3.4012 3.9587-3.3851z" stop-color="#000000"></path>
+                                                                    <path _ngcontent-kxm-c38="" d="m147.79 50.754v10.09h-40.121v-10.09z" stop-color="#000000"></path>
+                                                                    <path _ngcontent-kxm-c38="" d="m143.83 75.757-36.256-7.8e-5v-9.96h40.168l0.0472 6.575c0.0135 1.8753-1.7661 3.4012-3.9591 3.3851z" stop-color="#000000"></path>
+                                                                    <path _ngcontent-kxm-c38="" d="m42.9 105.79 36.256 4.2e-4v9.96h-40.121l-0.094-6.5754c-0.02681-1.8752 1.7656-3.4012 3.9587-3.3851z" stop-color="#000000"></path>
+                                                                    <path _ngcontent-kxm-c38="" d="m79.156 120.57v10.09h-40.121v-10.09z" stop-color="#000000"></path>
+                                                                    <path _ngcontent-kxm-c38="" d="m75.197 145.57-36.256 3e-5v-9.96h40.215v6.5749c0 1.8754-1.7659 3.4012-3.9589 3.3851z" stop-color="#000000"></path>
+                                                                </g>
+                                                                <g _ngcontent-kxm-c38="">
+                                                                    <path _ngcontent-kxm-c38="" d="m62.29 30.725 36.616 15.234" stroke-dasharray="2, 6"></path>
+                                                                    <path _ngcontent-kxm-c38="" d="m89.282 120.28 35.28-38.487" stroke-dasharray="2, 6.00001"></path>
+                                                                    <rect _ngcontent-kxm-c38="" x="110.61" y="105.54" width="14.798" height="14.798" rx="7.2501" ry="7.2501" stop-color="#000000"></rect>
+                                                                </g>
+                                                                <path _ngcontent-kxm-c38="" d="m76.697 24.637 13.493-9.3469 2.7567 16.21z"></path>
+                                                            </g>
+                                                        </svg>
+                                                    </div>
+                                                    <h2 _ngcontent-kxm-c38="">Any Node, Always Available</h2>
+                                                    <p _ngcontent-kxm-c38="">Even if the official
+                                                        <a _ngcontent-kxm-c38="" href="https://nault.cc" target="_blank" rel="noopener noreferrer">nault.cc</a> domain would become inaccessible, you would still be able to use the
+                                                        <a _ngcontent-kxm-c38="" href="https://github.com/Nault/Nault/releases" target="_blank" rel="noopener noreferrer">desktop application</a>
+                                                        or
+                                                        <a _ngcontent-kxm-c38="" href="https://github.com/Nault/Nault#web-app" target="_blank" rel="noopener noreferrer">host the web application yourself</a>
+                                                        .</p>
+                                                        <p _ngcontent-kxm-c38="">In Nault there is no single source of truth. All information is provided by the server that's set in app settings. That also means there is no single point of failure – you may choose any public or self-hosted
+                                                            <a _ngcontent-kxm-c38="" href="https://docs.nano.org/running-a-node/overview/" target="_blank" rel="noopener noreferrer">nano node</a> as the server.
+                                                        </p>
+                                                    </div>
+                                                    <div _ngcontent-kxm-c38="" class="feature uk-card-body uk-card-default">
+                                                        <div _ngcontent-kxm-c38="" class="icon">
+                                                            <svg _ngcontent-kxm-c38="" width="160mm" height="160mm" version="1.1" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+                                                                <g _ngcontent-kxm-c38="" fill="none" stroke="#000">
+                                                                    <g _ngcontent-kxm-c38="">
+                                                                        <g _ngcontent-kxm-c38="">
+                                                                            <path _ngcontent-kxm-c38="" transform="matrix(1.4835 0 0 1.4781 -13.178 -69.759)" d="m62.808 53.721c-9.889-0.26727-8.957 4.4916-8.8199 13.631 0.10686 7.1237 3.7525 7.4728 3.7525 7.4728v1.6358s-14.326-0.04302-13.107 16.303c0.51501 6.9035 1.3476 11.718 8.8468 11.945 8.8199 0.26727 10.199 0.0107 10.199 0.0107m-0.87165-50.999c9.889-0.26727 8.957 4.4916 8.8199 13.631-0.10686 7.1237-3.7525 7.4728-3.7525 7.4728v1.6358s14.326-0.04302 13.107 16.303c-0.51501 6.9035-1.3476 11.718-8.8468 11.945-8.8199 0.26727-10.199 0.0107-10.199 0.0107" stroke-width="1.3506"></path>
+                                                                            <path _ngcontent-kxm-c38="" d="m46.276 21.814c-10.482-0.28412-9.4945 4.7748-9.3492 14.49 0.11328 7.5729 3.9777 7.944 3.9777 7.944v1.739s-15.186-0.04573-13.893 17.331c0.54592 7.3387 1.4285 20.471 9.3776 20.712 9.3492 0.28412 10.811 0.0114 10.811 0.0114m-0.92395-62.228c10.482-0.28412 9.4945 4.7748 9.3492 14.49-0.11328 7.5729-3.9777 7.944-3.9777 7.944v1.739s2.3541-0.0061 3.8668 0.99653m-3.6921 36.315c-5.1826 1.1853-6.4702 0.74313-6.4702 0.74313" stroke-width="2"></path>
+                                                                            <path _ngcontent-kxm-c38="" d="m113.78 21.816c10.482-0.28412 9.4945 4.7748 9.3492 14.49-0.11326 7.5729-3.9777 7.944-3.9777 7.944v1.739s15.186-0.04573 13.893 17.331c-0.54592 7.3387-1.4285 20.471-9.3776 20.712-9.3492 0.28412-10.811 0.01139-10.811 0.01139m0.92397-62.228c-10.482-0.28412-9.4945 4.7748-9.3492 14.49 0.11326 7.5729 3.9777 7.944 3.9777 7.944v1.739s-2.3541-0.0061-3.8668 0.99653m3.6921 36.315c5.1826 1.1853 6.4702 0.74313 6.4702 0.74313" stroke-width="2"></path>
+                                                                        </g>
+                                                                        <path _ngcontent-kxm-c38="" transform="matrix(1.2392 0 0 1.2387 -6.7442 -30.298)" d="m22.538 100.54h47.462 47.462c2.77 0 2.9737 0.90258 2.8833 3.9417-0.0903 3.0391-6.8792 2.8321-6.8792 2.8321v33.961c0 2.77-2.23 5-5 5h-76.932c-2.77 0-5-2.23-5-5v-33.961s-6.7888 0.20694-6.8792-2.8321c-0.09033-3.0391 0.11333-3.9417 2.8833-3.9417z" stop-color="#000000" stroke-width="1.6143"></path>
+                                                                    </g>
+                                                                    <path _ngcontent-kxm-c38="" d="m40.587 123.36h78.826" stroke-linejoin="round" stroke-width="2">
+
+                                                                    </path>
+                                                                </g>
+                                                            </svg>
+                                                        </div>
+                                                        <h2 _ngcontent-kxm-c38="">Secure the Nano Network</h2>
+                                                        <p _ngcontent-kxm-c38="">Nano uses
+                                                            <a _ngcontent-kxm-c38="" href="https://docs.nano.org/protocol-design/orv-consensus/" target="_blank" rel="noopener noreferrer">ORV consensus</a>,
+                                                            which allows users to be in control of how much voting power representatives have on the network.</p>
+                                                            <p _ngcontent-kxm-c38="">Nault will automatically check the status of your representatives and provide recommendations to ensure security and censorship resistance for all network participants.</p>
+                                                        </div>
+                                                        <div _ngcontent-kxm-c38="" class="feature uk-card-body uk-card-default">
+                                                            <div _ngcontent-kxm-c38="" class="icon">
+                                                                <svg _ngcontent-kxm-c38="" width="160mm" height="160mm" version="1.1" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+                                                                    <g _ngcontent-kxm-c38="" fill="none" stroke="#000">
+                                                                        <rect _ngcontent-kxm-c38="" x="17.148" y="14.529" width="125.7" height="130.94" rx="5.6483" ry="5.647" stop-color="#000000" stroke-width="2"></rect>
+                                                                        <g _ngcontent-kxm-c38="">
+                                                                            <path _ngcontent-kxm-c38="" transform="matrix(1.0535 0 0 1.0601 -33.258 .94343)" d="m94.538 62.675c-4.0507 0.05061-7.4515 1.9242-7.4443 6.7542 0.0085 5.7713 3.4806 7.0204 3.4806 7.0204v9.9389h3.7794m-0.874-23.713c4.0507 0.05061 7.4515 1.9242 7.4443 6.7542-8e-3 5.7713-3.4806 7.0204-3.4806 7.0204v9.9389h-3.7794" stroke-width="2"></path>
+                                                                            <ellipse _ngcontent-kxm-c38="" cx="110.43" cy="80.149" rx="15.549" ry="15.545" stop-color="#000000" stroke-width="2"></ellipse>
+                                                                            <ellipse _ngcontent-kxm-c38="" cx="110.43" cy="80.149" rx="8.2677" ry="8.2659" stop-color="#000000" stroke-width="1.5"></ellipse>
+                                                                            <path _ngcontent-kxm-c38="" d="m125.57 80.02h-7.2778" stroke-width="2"></path><rect _ngcontent-kxm-c38="" x="23.43" y="20.81" width="113.14" height="118.38" rx="3.3245" ry="3.3386" stop-color="#000000" stroke-width="1.5"></rect>
+                                                                            <path _ngcontent-kxm-c38="" transform="matrix(1.0535 0 0 1.0601 -57.07 .94343)" d="m94.538 62.675c-4.0507 0.05061-7.4515 1.9242-7.4443 6.7542 0.0085 5.7713 3.4806 7.0204 3.4806 7.0204v9.9389h3.7794m-0.874-23.713c4.0507 0.05061 7.4515 1.9242 7.4443 6.7542-8e-3 5.7713-3.4806 7.0204-3.4806 7.0204v9.9389h-3.7794" stroke-width="2"></path>
+                                                                            <path _ngcontent-kxm-c38="" d="m125.57 80.02h-7.2778" stroke-width="1.5"></path>
+                                                                        </g>
+                                                                    </g>
+                                                                </svg>
+                                                            </div>
+                                                            <h2 _ngcontent-kxm-c38="">Advanced Security Features</h2>
+                                                            <p _ngcontent-kxm-c38="">Nault includes several options for enhanced security:</p>
+                                                            <ul _ngcontent-kxm-c38=""><li _ngcontent-kxm-c38="">Support for Ledger Nano S / Nano X hardware wallets</li>
+                                                                <li _ngcontent-kxm-c38="">Ability to create multi-signature addresses where multiple private keys are required to access and transfer the funds</li>
+                                                                <li _ngcontent-kxm-c38="">Ability to sign transactions remotely, allowing you to conduct transactions securely without ever allowing your secret keys to leave your offline device</li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </app-welcome>
+                                        <!---->
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+    </app-root>
+    <script type="text/javascript" src="assets/lib/pow/startThreads.js" async=""></script>
+    <script type="text/javascript" src="assets/lib/pow/nano-webgl-pow.js" async=""></script>
+    <noscript>Please enable JavaScript to continue using this application.</noscript>
+  <script src="runtime.cbd88fc1e77c34e7.js" type="module"></script><script src="polyfills.6ff8b11604869675.js" type="module"></script><script src="main.1b15cf75c4377ad4.js" type="module"></script>
+
+  <iframe src="chrome-extension://kmendfapggjehodndflmmgagdbamhnfd/u2f-comms.html" style="display:none"></iframe></body>
+</html>
